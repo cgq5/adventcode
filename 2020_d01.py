@@ -8,12 +8,10 @@ def find_pair(arr, target):
     idx = np.argmin(abs(target/2-arr))
     small_half = arr[:idx]
     big_half = arr[idx:]
-    pair = []
     for e in small_half:
         if target-e in big_half:
-            pair = [e, target-e]
-            break
-    return pair
+            return [e, target-e]
+    return 0 
 
 def find_triplet(arr, target):
     # At least arr containts one value below one third of the target
