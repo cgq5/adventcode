@@ -18,7 +18,6 @@ def count_trees_brute_force(data, toright, tobelow):
 
 if __name__ == '__main__':
     data = loadstr('data/2020_d03_input.txt')
-    data = loadstr('data/2020_d03_input_test.txt')
     nums = [1,3,5,7]
     cnt = 1
     for n in nums:
