@@ -2,9 +2,6 @@ import numpy as np
 import pandas as pd
 from pdb import set_trace
 
-def get_product(arr):
-    print(arr[0]*arr[1]*arr[2])
-
 def parse_input(filename):
     curr_dict = {} 
     all_dicts = []
@@ -91,6 +88,5 @@ def check_validity_pt2(dicts):
 
 if __name__ == '__main__':
     all_dicts = parse_input('data/2020_d04_input.txt')
-    #print(all_dicts)
     cnt = check_validity_pt2(all_dicts)
     print(cnt)
