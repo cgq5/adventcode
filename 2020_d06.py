@@ -2,9 +2,6 @@ import numpy as np
 import pandas as pd
 from pdb import set_trace
 
-def get_product(arr):
-    print(arr[0]*arr[1]*arr[2])
-
 def parse_input(filename, pt):
     ans = set()
     grps = []
