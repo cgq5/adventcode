@@ -13,30 +13,37 @@ def first_run(commands):
     record = []
     idx = 0 # current command line idx
     accumulator = 0
-    while len(record) >= 0:
-        if commands[idx][0] == 'nop':
-            idx += 1 
-        elif commands[idx][0] == 'jmp':
-            sign = commands[idx][1][0]
-            ops  = int(commands[idx][1][1])
+    while idx < len(commands):
+        record.append(idx)
+        ops  = commands[idx][0]
+        sign = commands[idx][1][0]
+        step = int(commands[idx][1][1:])
+        if ops == 'nop':
+            chk = idx
+            idx += 1
             if sign == '+':
-                idx += ops
+                chk += step 
             else: 
-                idx -= ops 
-        elif commands[idx][0] == 'acc':
-            sign = commands[idx][1][0]
-            ops  = int(commands[idx][1][1])
+                chk -= step
+            if chk == 638:
+                set_trace() 
+        elif ops == 'jmp':
             if sign == '+':
-                accumulator += int(ops)
+                idx += step 
             else: 
-                accumulator -= int(ops)
+                idx -= step 
+        elif ops == 'acc':
+            if sign == '+':
+                accumulator += int(step)
+            else: 
+                accumulator -= int(step)
+            #print(accumulator)
             idx += 1
         if idx in record:
             break
-        record.append(idx)
     print(accumulator)
     print(record)
     
 if __name__ == '__main__':
-    commands = parse_input('data/2020_d08_input_test.txt')
+    commands = parse_input('data/2020_d08_input.txt')
     first_run(commands)
