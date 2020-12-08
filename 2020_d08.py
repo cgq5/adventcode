@@ -74,4 +74,3 @@ if __name__ == '__main__':
     commands = parse_input('data/2020_d08_input_test1.txt')
     debugging(commands)
     #print(first_run(commands))
-    #reverse_run(commands)
