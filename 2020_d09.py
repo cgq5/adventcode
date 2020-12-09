@@ -14,47 +14,19 @@ def identify_invalid(nums, win_size):
                 return nums[i]
     return -1
 
-def combinations(iterable, r):
-    # combinations('ABCD', 2) --> AB AC AD BC BD CD
-    # combinations(range(4), 3) --> 012 013 023 123
-    pool = tuple(iterable)
-    n = len(pool)
-    if r > n:
-        return
-    indices = list(range(r))
-    yield tuple(pool[i] for i in indices)
-    while True:
-        for i in reversed(range(r)):
-            if indices[i] != i + n - r:
-                break
-        else:
-            return
-        indices[i] += 1
-        for j in range(i+1, r):
-            indices[j] = indices[j-1] + 1
-        yield tuple(pool[i] for i in indices)
-
-def get_combination_indices(win_size):
-    indices = []
-    for r in range(3, win_size+1):
-        com = combinations(range(win_size), r)
-        for i in com:
-            indices.append(np.asarray(i))
-    return indices
-
 def find_continguous_set(nums, win_size, first_invalid):
-    indices = get_combination_indices(win_size)
-    set_trace()
     i = 0
     while i + win_size <= len(nums):
-        for idx in indices:
-            if sum(nums[i:i+win_size][idx]) == first_invalid:
-                return min(nums[i:i+win_size][idx]), max(nums[i:i+win_size][idx])
+        if sum(nums[i:i+win_size]) == first_invalid:
+            return min(nums[i:i+win_size]), max(nums[i:i+win_size])
         i += 1
     return -1
 
 if __name__ == '__main__':
     data = pd.read_csv('data/2020_d09_input.txt', header=None).iloc[:, 0].to_numpy()
     first_invalid = identify_invalid(data, 25)
-    weakness = find_continguous_set(data, 15, first_invalid)
+    for ws in range(4, 200):
+        weakness = find_continguous_set(data, ws, first_invalid)
+        if weakness != -1:
+            break
     print(weakness)
