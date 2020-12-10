@@ -30,3 +30,4 @@ if __name__ == '__main__':
         if weakness != -1:
             break
     print(weakness)
+    print(sum(weakness))
