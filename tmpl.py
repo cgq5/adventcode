@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from pdb import set_trace
 
-def get_product(arr):
+def parse_input(arr):
     print(arr[0]*arr[1]*arr[2])
 
 if __name__ == '__main__':
