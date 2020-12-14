@@ -47,7 +47,7 @@ def parse_input_pt2(filename):
     return tests
 
 if __name__ == '__main__':
-    time, buses = parse_input('data/2020_d13_input_test1.txt')
+    time, buses = parse_input('data/2020_d13_input.txt')
     #bus, closesd = get_closest_bus_pt1(time, buses)
     #print((closesd - time)*bus )
     get_closest_bus_pt2(buses)
