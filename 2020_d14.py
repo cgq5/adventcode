@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import re
+from copy import deepcopy
 from pdb import set_trace
 
 def parse_input(filename):
@@ -35,6 +36,34 @@ def mask_memories_pt1(masks, memories):
         all_sum += new_memory[key]
     print(all_sum)
 
+def gen_binaries(patt, bins):
+    if "X" not in patt:
+        bins.append(int(patt, 2))
+    else:
+        gen_binaries(patt.replace("X", "0", 1), bins)
+        gen_binaries(patt.replace("X", "1", 1), bins)
+    return bins
+
+def mask_memories_pt2(masks, memories):
+    new_memory = {}
+    for i in range(len(masks)):
+        for key in memories[i]:
+            mem = bin(int(key))[2:].zfill(36)
+            # decoding
+            new_mem = ''.join([mem[j] if masks[i][j]=='0' else masks[i][j] for j in range(36)])
+            bins = []
+            new_keys = gen_binaries(new_mem, bins)
+            for k in new_keys:
+                new_memory[k] = memories[i][key]
+    all_sum = 0
+    for key in new_memory:
+        if isinstance(new_memory[key], list):
+            all_sum += sum(new_memory[key])
+        else:
+            all_sum += new_memory[key]
+    print(all_sum)
+
 if __name__ == '__main__':
     masks, memories = parse_input('data/2020_d14_input.txt')
-    mask_memories_pt1(masks, memories)
+    #mask_memories_pt1(masks, memories)
+    mask_memories_pt2(masks, memories)
