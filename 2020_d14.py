@@ -57,10 +57,7 @@ def mask_memories_pt2(masks, memories):
                 new_memory[k] = memories[i][key]
     all_sum = 0
     for key in new_memory:
-        if isinstance(new_memory[key], list):
-            all_sum += sum(new_memory[key])
-        else:
-            all_sum += new_memory[key]
+        all_sum += new_memory[key]
     print(all_sum)
 
 if __name__ == '__main__':
