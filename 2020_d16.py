@@ -41,9 +41,12 @@ def chk_class_range(data, field, tkt_field):
     upper2 = int(data[field][1].split('-')[1])
     if tkt_field == 'valid_n_tkt':
         indices = []
-        for d in data['valid_n_tkt']:
-            indices.append(np.invert((d < lower1) | ((d > upper1) & (d < lower2)) | (d > upper2)))
-        return indices
+        for i in range(np.shape(data['valid_n_tkt'])[1]):
+            c = data['valid_n_tkt'][:,i]
+            idx = np.invert((c < lower1) | ((c > upper1) & (c < lower2)) | (c > upper2))
+            idx[c==0] = True
+            indices.append(all(idx))
+        return np.array(indices)
     else:
         idx = (tkt < lower1) | ((tkt > upper1) & (tkt < lower2)) | (tkt > upper2)
         return idx 
@@ -53,31 +56,47 @@ def get_err_rate(data, tkt_field):
     for k in data:
         if k not in ['y_tkt', 'n_tkt', 'valid_y_tkt', 'valid_n_tkt']:
             idx = idx & chk_class_range(data, k, tkt_field)
-    #print(sum(data['n_tkt'][idx]))
     return idx 
 
 def get_field_order(data):
-    order = ['' for i in range(len(data['valid_n_tkt']))]
+    order = [[] for i in range(len(data['valid_n_tkt']))]
+    keys = []
+    mat = []
     for k in data:
         if k not in ['y_tkt', 'n_tkt', 'valid_y_tkt', 'valid_n_tkt']:
-            indices = chk_class_range(data, k, 'valid_n_tkt')
-            set_trace()
-            for i in range(len(indices)):
-                if sum(indices[i]==False)==0:
-                    order[i] = k
-                    break
-    print(order)
+            keys.append(k)
+            mat.append(chk_class_range(data, k, 'valid_n_tkt').astype(int))
+    return keys, np.array(mat)
+
+def get_uniq_field(mat):
+    if sum(sum(mat)) == np.shape(mat)[0]:
+        return mat
+    rows = np.where(np.sum(mat, axis=1) == 1)[0]
+    cols = np.nonzero(mat[rows, :])[1]
+    mat[:,cols] = 0
+    mat[rows,cols] = 1
+    return get_uniq_field(mat)
 
 def get_valid_nearby(data, unit):
-    invalid = set(data['n_tkt'][get_err_rate(data, 'n_tkt')])
+    n_tkt = [data['n_tkt'][x:x+unit] for x in range(0, len(data['n_tkt']), unit)]
+    indices = get_err_rate(data, 'n_tkt')
+    indices = [indices[x:x+unit] for x in range(0, len(indices), unit)]
     valid_n_tkt = []
-    for idx in range(len(data['n_tkt']))[::unit]:
-        valid_n_tkt.append(np.array(list(set(data['n_tkt'][idx:(idx+unit)]) - invalid)))
-    return valid_n_tkt
+    for i, line in enumerate(n_tkt):
+        line[indices[i]] = 0
+        valid_n_tkt.append(line)
+    return np.array(valid_n_tkt)
+
+def get_dept_multiply(data, mat):
+    cols = np.where(mat == 1)[1]
+    print(np.prod(data['valid_y_tkt'][cols[:6]]))
 
 if __name__ == '__main__':
-    data = parse_input('data/2020_d16_input_test.txt')
+    data = parse_input('data/2020_d16_input.txt')
+    unit = 20 
     #print(get_err_rate(data, 'n_tkt'))
     data['valid_y_tkt'] = data['y_tkt'][np.invert(get_err_rate(data, 'y_tkt'))] # get valid tickets
-    data['valid_n_tkt'] = get_valid_nearby(data, 3)
-    get_field_order(data)
+    data['valid_n_tkt'] = get_valid_nearby(data, unit)
+    keys, mat = get_field_order(data)
+    mat = get_uniq_field(mat)
+    get_dept_multiply(data, mat)
