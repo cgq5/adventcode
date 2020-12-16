@@ -29,4 +29,4 @@ if __name__ == '__main__':
     ins = test
     init = [int(n) for n in ins.split(',')] 
     #print(gen_nums_pt1(init))
-    print(get_nums_pt2(init[-1], {num: idx + 1 for idx, num in enumerate(init[:-1])}, limit=5))
+    print(get_nums_pt2(init[-1], {num: idx + 1 for idx, num in enumerate(init[:-1])}, limit=10))
