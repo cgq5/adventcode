@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from itertools import product 
 from pdb import set_trace
 
 def parse_input(filename):
@@ -20,17 +21,31 @@ def parse_input(filename):
             i += 1
     return rules, msg
 
-def get_rule_zero(rules, key):
+def get_explicit_rules(rules, key):
     curr_rule = rules[key]
-    chk = [r.isdigit() for r in curr_rule]
-    set_trace()
+    #chk = [r.isdigit() for r in curr_rule]
+    chk = [r.isdigit() for r in curr_rule if type(r) != list]
     if any(chk):
+        str_rules = []
+        str_rule = [] 
         for i in range(len(curr_rule)):
-            if chk[i]:
-                return get_rule_zero(rules, curr_rule[i])
+            if curr_rule[i] != '|':
+                exp_rule = get_explicit_rules(rules, curr_rule[i])
+                if type(exp_rule) == list and len(str_rule) != 0:
+                    str_rule = list(product(str_rule, exp_rule))
+                    print(str_rule)
+                    str_rule = ["".join(s) for s in str_rule]
+                else:
+                    str_rule += exp_rule
+            else:
+                str_rules.append(''.join(str_rule))
+                str_rule = [] 
+        str_rules.append(''.join(str_rule))
+        rules[key] = str_rules
+        return rules[key]
     else:
-        return curr_rule
+        return ["".join(curr_rule)]
 
 if __name__ == '__main__':
     rules, msg = parse_input('data/2020_d19_input_test.txt')
-    get_rule_zero(rules, '0')
+    print(get_explicit_rules(rules, '1'))
