@@ -43,8 +43,8 @@ def all_refresh(data):
     curr_data = deepcopy(data)
     i = 0
     while True:
-        #new_data = refresh_once_pt1(curr_data, cell_indices)
-        new_data = refresh_once_pt2(curr_data, cell_indices)
+        new_data = refresh_once_pt1(curr_data, cell_indices)
+        #new_data = refresh_once_pt2(curr_data, cell_indices)
         if new_data.tolist() == curr_data.tolist():
             break
         else:
@@ -54,5 +54,5 @@ def all_refresh(data):
     print(sum(sum(new_data == 1)))
 
 if __name__ == '__main__':
-    data = parse_input('data/2020_d11_input_test.txt')
+    data = parse_input('data/2020_d11_input.txt')
     all_refresh(data)
